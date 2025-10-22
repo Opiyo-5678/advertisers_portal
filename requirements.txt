@@ -15,7 +15,7 @@ PyMySQL>=1.0,<2.0
 python-decouple>=3.8,<4.0
 
 # Rich text editor
-django-ckeditor>=7.0,<8.0
+django-ckeditor==6.7.3
 
 # Optional utilities commonly used with Django projects
 gunicorn>=20.1,<21.0
