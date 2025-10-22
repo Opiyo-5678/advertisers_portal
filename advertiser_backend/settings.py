@@ -10,7 +10,7 @@ pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-FRONTEND_DIR = BASE_DIR / 'frontend'  # Add this line
+FRONTEND_DIR = BASE_DIR / 'frontend'
 
 
 # Quick-start development settings - unsuitable for production
@@ -63,7 +63,7 @@ ROOT_URLCONF = 'advertiser_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [FRONTEND_DIR / 'dist'],  # Updated: Add React build directory
+        'DIRS': [FRONTEND_DIR / 'dist'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -146,40 +146,48 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 # Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.2/howto/static-files/
+
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Updated: Only include directories that exist
+# Only include Django's static folder if it exists
 STATICFILES_DIRS = []
-
-# Add Django static files directory if it exists
 if (BASE_DIR / 'static').exists():
     STATICFILES_DIRS.append(BASE_DIR / 'static')
-
-# Add React build assets if they exist
-if (FRONTEND_DIR / 'dist' / 'assets').exists():
-    STATICFILES_DIRS.append(FRONTEND_DIR / 'dist' / 'assets')
 
 # Media files (User uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# CORS Configuration - Updated for both development and production
+# WhiteNoise Configuration
+# Serve React build files from frontend/dist
+WHITENOISE_ROOT = FRONTEND_DIR / 'dist'
+WHITENOISE_INDEX_FILE = True
+WHITENOISE_AUTOREFRESH = DEBUG
+
+# Storage Configuration
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
+
+# CORS Configuration - Allow both development and production
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://advertisers-portal-7.onrender.com",  # Add your production URL
+    "https://advertisers-portal-7.onrender.com",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -196,11 +204,11 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-# Updated: Add production URL to CSRF trusted origins
+# CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://advertisers-portal-7.onrender.com",  # Add your production URL
+    "https://advertisers-portal-7.onrender.com",
 ]
 
 # REST Framework Settings
@@ -221,6 +229,7 @@ REST_FRAMEWORK = {
     ],
 }
 
+# JWT Settings
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -236,6 +245,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.User'
 
+# CKEditor Configuration
 CKEDITOR_UPLOAD_PATH = "uploads/ckeditor/"
 CKEDITOR_CONFIGS = {
     'default': {
@@ -245,14 +255,5 @@ CKEDITOR_CONFIGS = {
         'extraPlugins': ','.join([
             'codesnippet',
         ]),
-    },
-}
-
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
