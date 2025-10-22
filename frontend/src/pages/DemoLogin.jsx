@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../axios';
+import axiosInstance from '../api/axios';  // ← Changed from '../axios' to '../api/axios'
 import Cookies from 'js-cookie';
 
 const DemoLogin = () => {
@@ -10,7 +10,7 @@ const DemoLogin = () => {
   useEffect(() => {
     const loginAsDemo = async () => {
       try {
-        // Login with demo credentials using axios directly
+        // Login with demo credentials
         const response = await axiosInstance.post('/accounts/auth/login/', {
           username: 'demo',
           password: 'demo123'
