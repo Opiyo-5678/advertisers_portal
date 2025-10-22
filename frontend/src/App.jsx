@@ -17,6 +17,7 @@ import CreateAd from './pages/CreateAd';
 import MyAds from './pages/MyAds';
 import MyBookings from './pages/MyBookings';
 import Calendar from './pages/Calendar';
+import DemoLogin from './pages/DemoLogin';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           {/*  PUBLIC ROUTES (No Authentication)      */}
           {/* ========================================= */}
           <Route path="/" element={<LandingPage />} />
+          <Route path="/demo-login" element={<DemoLogin />} />
           <Route path="/pricing" element={<PricingPage />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/login" element={<Login />} />
