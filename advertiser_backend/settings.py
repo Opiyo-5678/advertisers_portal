@@ -160,12 +160,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Updated: Include both Django static files and React build assets
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+# Updated: Only include directories that exist
+STATICFILES_DIRS = []
 
-# Only add frontend dist/assets if the directory exists (for production)
+# Add Django static files directory if it exists
+if (BASE_DIR / 'static').exists():
+    STATICFILES_DIRS.append(BASE_DIR / 'static')
+
+# Add React build assets if they exist
 if (FRONTEND_DIR / 'dist' / 'assets').exists():
     STATICFILES_DIRS.append(FRONTEND_DIR / 'dist' / 'assets')
 
