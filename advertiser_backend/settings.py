@@ -77,30 +77,41 @@ WSGI_APPLICATION = 'advertiser_backend.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DB_NAME'),           
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
-        },
-    }
-}
-
-# Use DATABASE_URL (e.g. from Render) if present, otherwise fall back to MySQL config above
+# Priority: 1) DATABASE_URL (managed DB like Render Postgres) => 2) DB_* env vars (MySQL) => 3) SQLite fallback
 import dj_database_url
 
+# If a DATABASE_URL is provided (recommended on Render), use it
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
+else:
+    # Read DB_* env vars safely (do not raise if missing). If DB_NAME is provided we'll assume MySQL.
+    DB_NAME = config('DB_NAME', default=None)
+    if DB_NAME:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': DB_NAME,
+                'USER': config('DB_USER', default=''),
+                'PASSWORD': config('DB_PASSWORD', default=''),
+                'HOST': config('DB_HOST', default=''),
+                'PORT': config('DB_PORT', default=''),
+                'OPTIONS': {
+                    'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+                    'charset': 'utf8mb4',
+                },
+            }
+        }
+    else:
+        # No DATABASE_URL and no DB_NAME — fall back to a local SQLite DB to allow deploy/tests to start
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
