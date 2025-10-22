@@ -4,10 +4,8 @@ import {
   FileText, 
   Link2, 
   Calendar, 
-  CreditCard, 
-  BarChart3, 
-  History, 
-  CheckCircle2
+  CheckCircle2,
+  CreditCard
 } from 'lucide-react';
 
 const LandingPage = () => {
@@ -20,13 +18,11 @@ const LandingPage = () => {
     { icon: <Calendar className="w-5 h-5" />, text: "Browse available advertising placements" },
     { icon: <CheckCircle2 className="w-5 h-5" />, text: "Check availability using calendar" },
     { icon: <CreditCard className="w-5 h-5" />, text: "Book advertising slots for specific periods" },
-    { icon: <BarChart3 className="w-5 h-5" />, text: "Make and track payments" },
-    { icon: <History className="w-5 h-5" />, text: "View your booking history" },
-    { icon: <CheckCircle2 className="w-5 h-5" />, text: "See analytics and statistics" },
+    { icon: <CheckCircle2 className="w-5 h-5" />, text: "Make and track payments" },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <div className="w-full max-w-6xl bg-white rounded-2xl shadow-2xl overflow-hidden">
         
         {/* TOP: Title and Subtitle */}
@@ -83,17 +79,17 @@ const LandingPage = () => {
               </button>
             </div>
 
-            {/* Try Demo - Full Width */}
+            {/* View Demo - Full Width */}
             <button
               onClick={() => navigate('/demo-login')}
               className="w-full px-6 py-4 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition-all transform hover:scale-105 shadow-lg"
             >
-              Try Demo (No Registration)
+              View Demo
             </button>
 
             {/* Info Text */}
             <p className="text-center text-gray-600 text-sm">
-              Demo account lets you explore all features without registration
+              Explore all features without registration
             </p>
           </div>
 
