@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white text-gray-900;
+  }
+}
+
+@layer components {
+  /* Buttons */
+  .btn-primary {
+    @apply bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors font-medium shadow-sm;
+  }
+  
+  .btn-secondary {
+    @apply bg-navy-800 text-white px-4 py-2 rounded-lg hover:bg-navy-900 transition-colors font-medium;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-cyan-500 text-cyan-600 px-4 py-2 rounded-lg hover:bg-cyan-50 transition-colors font-medium;
+  }
+  
+  /* Input Fields */
+  .input-field {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all;
+  }
+  
+  /* Cards */
+  .card {
+    @apply bg-white rounded-lg shadow-md p-6 border border-gray-100;
+  }
+  
+  .card-hover {
+    @apply bg-white rounded-lg shadow-md p-6 border border-gray-100 hover:shadow-lg transition-shadow cursor-pointer;
+  }
+  
+  /* Navigation */
+  .nav-link {
+    @apply text-white hover:text-cyan-300 transition-colors px-4 py-2 rounded-md;
+  }
+  
+  .nav-link-active {
+    @apply text-cyan-300 bg-navy-900 px-4 py-2 rounded-md;
+  }
+  
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+  }
+  
+  .badge-success {
+    @apply bg-green-100 text-green-800;
+  }
+  
+  .badge-warning {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+  
+  .badge-danger {
+    @apply bg-red-100 text-red-800;
+  }
+  
+  .badge-info {
+    @apply bg-cyan-100 text-cyan-800;
+  }
+  
+  /* Text Styles */
+  .text-primary {
+    @apply text-navy-800;
+  }
+  
+  .text-secondary {
+    @apply text-dark-grey-600;
+  }
+  
+  .text-accent {
+    @apply text-cyan-500;
+  }
+  
+  /* Page Headers */
+  .page-header {
+    @apply bg-navy-800 text-white px-6 py-4 rounded-lg mb-6;
+  }
+}
+/* Toast Animation */
+@keyframes slide-in {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
