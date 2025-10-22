@@ -9,7 +9,12 @@ import os
 from django.conf import settings
 import uuid
 from rest_framework import serializers
-import clamd
+try:
+    import clamd
+    _HAS_CLAMD = True
+except Exception:
+    clamd = None
+    _HAS_CLAMD = False
 from datetime import datetime
 from django.utils import timezone
 from django.core.mail import send_mail
@@ -358,16 +363,21 @@ class UploadedFileViewSet(viewsets.ModelViewSet):
         Scan a file for viruses using ClamAV
         Returns: ('clean'|'infected'|'failed', threat_name_or_error)
         """
+        # If pyclamd / clamd isn't installed, return failed so uploads still work
+        if not _HAS_CLAMD or clamd is None:
+            print("⚠️ WARNING: clamd (pyclamd) not installed. Skipping virus scan.")
+            return ('failed', 'clamd not installed')
+
         try:
-            # Connect to ClamAV daemon
-            cd = clamd.ClamdUnixSocket()  # Use ClamdNetworkSocket() for TCP
-            
+            # Connect to ClamAV daemon (Unix socket by default)
+            cd = clamd.ClamdUnixSocket()  # Use ClamdNetworkSocket() for TCP if available
+
             # Scan the file
             scan_result = cd.scan(file_path)
-            
+
             if scan_result is None:
                 return ('clean', None)
-            
+
             # Check if file is infected
             if file_path in scan_result:
                 status, threat = scan_result[file_path]
@@ -375,9 +385,9 @@ class UploadedFileViewSet(viewsets.ModelViewSet):
                     return ('infected', threat)
                 else:
                     return ('clean', None)
-            
+
             return ('clean', None)
-            
+
         except clamd.ConnectionError:
             # ClamAV daemon not running
             print("⚠️ WARNING: ClamAV daemon not running. File not scanned.")
