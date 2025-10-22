@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import { useAuth } from '../context/AuthContext';
 
 const DemoLogin = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [status, setStatus] = useState('Logging in as demo user...');
 
   useEffect(() => {
@@ -12,28 +12,27 @@ const DemoLogin = () => {
       try {
         setStatus('Logging in as demo user...');
         
-        // Login with demo credentials using direct axios call
-        const response = await axios.post('/api/accounts/auth/login/', {
-          username: 'demo',
-          password: 'demo123'
-        });
+        // Use AuthContext's login function
+        const result = await login('demo', 'demo123');
         
-        // Store tokens in cookies
-        Cookies.set('access_token', response.data.access, { expires: 7 });
-        Cookies.set('refresh_token', response.data.refresh, { expires: 7 });
-        
-        setStatus('Success! Redirecting to dashboard...');
-        
-        // Redirect to dashboard after short delay
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 500);
+        if (result.success) {
+          setStatus('Success! Redirecting to dashboard...');
+          
+          // Redirect to dashboard
+          setTimeout(() => {
+            navigate('/dashboard');
+          }, 500);
+        } else {
+          setStatus('Demo login failed. Redirecting to login page...');
+          setTimeout(() => {
+            navigate('/login');
+          }, 3000);
+        }
         
       } catch (error) {
         console.error('Demo login error:', error);
-        setStatus('Demo login failed. Please try again or use manual login.');
+        setStatus('Demo login failed. Redirecting to login page...');
         
-        // Redirect to login page after delay
         setTimeout(() => {
           navigate('/login');
         }, 3000);
@@ -41,7 +40,7 @@ const DemoLogin = () => {
     };
 
     loginAsDemo();
-  }, [navigate]);
+  }, [login, navigate]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
