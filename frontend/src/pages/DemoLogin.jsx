@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authAPI } from '../services';
+import axiosInstance from '../axios';
 import Cookies from 'js-cookie';
 
 const DemoLogin = () => {
@@ -10,8 +10,11 @@ const DemoLogin = () => {
   useEffect(() => {
     const loginAsDemo = async () => {
       try {
-        // Login with demo credentials
-        const response = await authAPI.login('demo', 'demo123');
+        // Login with demo credentials using axios directly
+        const response = await axiosInstance.post('/accounts/auth/login/', {
+          username: 'demo',
+          password: 'demo123'
+        });
         
         // Store tokens
         Cookies.set('access_token', response.data.access);
@@ -25,6 +28,7 @@ const DemoLogin = () => {
         }, 1000);
       } catch (error) {
         setStatus('Demo login failed. Redirecting to login page...');
+        console.error('Demo login error:', error);
         setTimeout(() => {
           navigate('/login');
         }, 2000);
