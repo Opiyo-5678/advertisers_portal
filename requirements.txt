@@ -1,0 +1,22 @@
+# Core
+Django>=4.2,<5.3
+
+# REST and auth
+djangorestframework>=3.14,<4.0
+djangorestframework-simplejwt>=5.2,<6.0
+
+# CORS, filtering and API docs
+django-cors-headers>=4.0,<5.0
+django-filter>=23.0,<24.0
+drf-yasg>=1.22,<2.0
+
+# MySQL driver & env
+PyMySQL>=1.0,<2.0
+python-decouple>=3.8,<4.0
+
+# Rich text editor
+django-ckeditor>=7.0,<8.0
+
+# Optional utilities commonly used with Django projects
+gunicorn>=20.1,<21.0
+psycopg2-binary>=2.9.7,<3.0
