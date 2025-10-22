@@ -10,6 +10,7 @@ pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+FRONTEND_DIR = BASE_DIR / 'frontend'  # Add this line
 
 
 # Quick-start development settings - unsuitable for production
@@ -62,7 +63,7 @@ ROOT_URLCONF = 'advertiser_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [FRONTEND_DIR / 'dist'],  # Updated: Add React build directory
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -158,23 +159,25 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+
+# Updated: Include both Django static files and React build assets
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+# Only add frontend dist/assets if the directory exists (for production)
+if (FRONTEND_DIR / 'dist' / 'assets').exists():
+    STATICFILES_DIRS.append(FRONTEND_DIR / 'dist' / 'assets')
 
 # Media files (User uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# CORS Settings
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-#     "http://127.0.0.1:3000",
-# ]
-
-# CORS_ALLOW_CREDENTIALS = True
-# CORS Configuration - Allow React Frontend
+# CORS Configuration - Updated for both development and production
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://advertisers-portal-7.onrender.com",  # Add your production URL
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -191,9 +194,11 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
+# Updated: Add production URL to CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://advertisers-portal-7.onrender.com",  # Add your production URL
 ]
 
 # REST Framework Settings
