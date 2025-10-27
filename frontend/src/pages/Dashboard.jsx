@@ -1,11 +1,11 @@
 /*
  * ============================================================================
- * Dashboard.jsx - ULTRA-CLEAN VERSION
+ * Dashboard.jsx - FINAL ULTRA-CLEAN VERSION
  * ============================================================================
  * 
  * FOCUS: Only 6 core requirements
- * REMOVED: All analytics (Total Ads, Active Ads, Impressions, Clicks, CTR, Revenue)
- * KEPT: Active Bookings, Quick Actions, Brief info text
+ * REMOVED: All analytics and Active Bookings
+ * KEPT: Welcome message, Info text, Quick Actions only
  * 
  * DATE CLEANED: October 27, 2025
  * ============================================================================
@@ -14,7 +14,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { bookingsAPI } from '../api/services';
 import Toast from '../components/Toast';
 import { 
   Calendar, 
@@ -28,10 +27,6 @@ const Dashboard = () => {
   
   // State declarations
   const [showWelcome, setShowWelcome] = useState(false);
-  const [bookingStats, setBookingStats] = useState({
-    active_bookings: 0,
-  });
-  const [loading, setLoading] = useState(true);
 
   // Show welcome message for new users
   useEffect(() => {
@@ -39,30 +34,6 @@ const Dashboard = () => {
       setShowWelcome(true);
     }
   }, [location]);
-
-  // Fetch dashboard data
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const fetchDashboardData = async () => {
-    try {
-      const bookingsResponse = await bookingsAPI.getMyStatistics();
-      setBookingStats(bookingsResponse.data);
-    } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -99,20 +70,6 @@ const Dashboard = () => {
             <p className="text-navy-800">
               Upload logos, write ad text, and link to your website or catalog. All files are security-scanned.
             </p>
-          </div>
-        </div>
-
-        {/* Active Bookings Card */}
-        <div className="card">
-          <h3 className="text-lg font-semibold text-navy-800 mb-4 flex items-center">
-            <Calendar className="mr-2" size={20} />
-            Active Bookings
-          </h3>
-          <div className="flex items-center justify-between">
-            <span className="text-dark-grey-600">Active Campaigns</span>
-            <span className="text-3xl font-bold text-navy-800">
-              {bookingStats.active_bookings}
-            </span>
           </div>
         </div>
 
