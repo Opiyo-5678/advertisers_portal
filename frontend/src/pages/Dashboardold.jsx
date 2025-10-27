@@ -1,17 +1,3 @@
-/*
- * ============================================================================
- * Dashboard.jsx - CLEANED VERSION
- * ============================================================================
- * 
- * REMOVED: Traditional advertising analytics (impressions, clicks, CTR, revenue)
- * KEPT: Core functionality (Total Ads, Active Ads, Active Bookings, Quick Actions)
- * 
- * Commented sections are marked with: // ❌ COMMENTED OUT - Marketing analytics
- * 
- * DATE CLEANED: October 27, 2025
- * ============================================================================
- */
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -19,8 +5,8 @@ import { adsAPI, bookingsAPI } from '../api/services';
 import Toast from '../components/Toast';
 import { 
   TrendingUp, 
-  // Eye,  // ❌ COMMENTED OUT - Used for impressions
-  // MousePointer,  // ❌ COMMENTED OUT - Used for clicks
+  Eye, 
+  MousePointer, 
   Calendar, 
   Plus,
   BarChart3,
@@ -36,15 +22,13 @@ const Dashboard = () => {
   const [stats, setStats] = useState({
     total_ads: 0,
     active_ads: 0,
-    // ❌ COMMENTED OUT - Marketing analytics
-    // total_impressions: 0,
-    // total_clicks: 0,
-    // average_ctr: 0,
+    total_impressions: 0,
+    total_clicks: 0,
+    average_ctr: 0,
   });
   const [bookingStats, setBookingStats] = useState({
     active_bookings: 0,
-    // ❌ COMMENTED OUT - Revenue tracking removed
-    // total_revenue: 0,
+    total_revenue: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -126,8 +110,8 @@ const Dashboard = () => {
           </Link>
         </div>
 
-        {/* Stats Grid - CLEANED: Only showing Total Ads and Active Ads */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             icon={BarChart3}
             title="Total Ads"
@@ -142,7 +126,6 @@ const Dashboard = () => {
             color="text-green-600"
             bgColor="bg-green-100"
           />
-          {/* ❌ COMMENTED OUT - Marketing analytics (Impressions & Clicks)
           <StatCard
             icon={Eye}
             title="Total Impressions"
@@ -157,12 +140,11 @@ const Dashboard = () => {
             color="text-purple-600"
             bgColor="bg-purple-100"
           />
-          */}
         </div>
 
-        {/* Performance Overview - CLEANED: Removed CTR, kept only Bookings */}
-        <div className="grid grid-cols-1 gap-6">
-          {/* ❌ COMMENTED OUT - CTR Analytics Card
+        {/* Performance Overview */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* CTR Card */}
           <div className="card">
             <h3 className="text-lg font-semibold text-navy-800 mb-4">
               Click-Through Rate
@@ -176,9 +158,8 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          */}
 
-          {/* Bookings Card - CLEANED: Removed revenue tracking */}
+          {/* Bookings Card */}
           <div className="card">
             <h3 className="text-lg font-semibold text-navy-800 mb-4 flex items-center">
               <Calendar className="mr-2" size={20} />
@@ -191,14 +172,12 @@ const Dashboard = () => {
                   {bookingStats.active_bookings}
                 </span>
               </div>
-              {/* ❌ COMMENTED OUT - Revenue tracking
               <div className="flex items-center justify-between">
                 <span className="text-dark-grey-600">Total Revenue</span>
                 <span className="text-2xl font-bold text-green-600">
                   ${parseFloat(bookingStats.total_revenue).toFixed(2)}
                 </span>
               </div>
-              */}
             </div>
           </div>
         </div>
@@ -235,7 +214,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Getting Started - CLEANED: Removed step 3 about tracking clicks/impressions */}
+        {/* Getting Started */}
         <div className="card">
           <h3 className="text-lg font-semibold text-navy-800 mb-4 flex items-center">
             <Clock className="mr-2" size={20} />
@@ -260,7 +239,6 @@ const Dashboard = () => {
                 <p className="text-sm text-dark-grey-600">Select where and when to show your ad</p>
               </div>
             </div>
-            {/* ❌ COMMENTED OUT - Marketing analytics tracking step
             <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
               <div className="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
                 3
@@ -270,7 +248,6 @@ const Dashboard = () => {
                 <p className="text-sm text-dark-grey-600">Monitor clicks and impressions</p>
               </div>
             </div>
-            */}
           </div>
         </div>
       </div>
