@@ -4,15 +4,14 @@ import { adsAPI } from '../api/services';
 import Toast from '../components/Toast';
 import { 
   Plus, Search, Filter, Eye, Edit, Trash2, 
-  TrendingUp, MousePointerClick, BarChart3, AlertCircle, Send, XCircle,
-  Link as LinkIcon, FileText, MessageCircle, Image as ImageIcon
+  BarChart3, AlertCircle, Send, XCircle,
+  Link as LinkIcon, FileText, Image as ImageIcon
 } from 'lucide-react';
 
 const MyAds = () => {
   const navigate = useNavigate();
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [error, setError] = useState(null);
@@ -20,10 +19,9 @@ const MyAds = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('success');
 
-  // Fetch ads and statistics
+  // Fetch ads
   useEffect(() => {
     fetchAds();
-    fetchStatistics();
   }, [statusFilter]);
 
   const fetchAds = async () => {
@@ -41,22 +39,12 @@ const MyAds = () => {
     }
   };
 
-  const fetchStatistics = async () => {
-    try {
-      const response = await adsAPI.getMyStatistics();
-      setStats(response.data);
-    } catch (err) {
-      console.error('Error fetching statistics:', err);
-    }
-  };
-
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this ad?')) return;
     
     try {
       await adsAPI.delete(id);
       setAds(ads.filter(ad => ad.id !== id));
-      fetchStatistics();
       showToastMessage('Ad deleted successfully', 'success');
     } catch (err) {
       showToastMessage('Failed to delete ad', 'error');
@@ -72,7 +60,6 @@ const MyAds = () => {
       setAds(ads.map(ad => 
         ad.id === id ? { ...ad, status: 'pending_review' } : ad
       ));
-      fetchStatistics();
       showToastMessage('🎉 Ad submitted for review!', 'success');
     } catch (err) {
       showToastMessage('Failed to submit ad', 'error');
@@ -126,7 +113,7 @@ const MyAds = () => {
           <div className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-3xl font-bold text-navy-800">My Ads</h1>
-              <p className="text-gray-600 mt-1">Manage your advertising campaigns</p>
+              <p className="text-gray-600 mt-1">Manage your advertising flyers</p>
             </div>
             <Link
               to="/ads/create"
@@ -137,51 +124,6 @@ const MyAds = () => {
             </Link>
           </div>
 
-          {/* Statistics Cards */}
-          {stats && (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <div className="card bg-gradient-to-br from-cyan-500 to-cyan-600 text-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-cyan-100 text-sm">Total Ads</p>
-                    <h3 className="text-3xl font-bold mt-1">{stats.total_ads}</h3>
-                  </div>
-                  <BarChart3 size={40} className="text-cyan-200" />
-                </div>
-              </div>
-
-              <div className="card bg-gradient-to-br from-green-500 to-green-600 text-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-green-100 text-sm">Active Ads</p>
-                    <h3 className="text-3xl font-bold mt-1">{stats.active_ads}</h3>
-                  </div>
-                  <TrendingUp size={40} className="text-green-200" />
-                </div>
-              </div>
-
-              <div className="card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-purple-100 text-sm">Total Impressions</p>
-                    <h3 className="text-3xl font-bold mt-1">{stats.total_impressions.toLocaleString()}</h3>
-                  </div>
-                  <Eye size={40} className="text-purple-200" />
-                </div>
-              </div>
-
-              <div className="card bg-gradient-to-br from-orange-500 to-orange-600 text-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-orange-100 text-sm">Total Clicks</p>
-                    <h3 className="text-3xl font-bold mt-1">{stats.total_clicks.toLocaleString()}</h3>
-                  </div>
-                  <MousePointerClick size={40} className="text-orange-200" />
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Search and Filter Bar */}
           <div className="card mb-6">
             <div className="flex flex-col md:flex-row gap-4">
@@ -189,26 +131,25 @@ const MyAds = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <input
                   type="text"
-                  placeholder="Search ads by title or description..."
+                  placeholder="Search ads..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none"
+                  className="input-field pl-10"
                 />
               </div>
-              
               <div className="flex items-center space-x-2">
-                <Filter className="text-gray-400" size={20} />
+                <Filter size={20} className="text-gray-400" />
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none bg-white"
+                  className="input-field"
                 >
                   <option value="all">All Status</option>
                   <option value="draft">Draft</option>
                   <option value="pending_review">Pending Review</option>
                   <option value="approved">Approved</option>
-                  <option value="live">Live</option>
                   <option value="rejected">Rejected</option>
+                  <option value="live">Live</option>
                   <option value="expired">Expired</option>
                   <option value="paused">Paused</option>
                 </select>
@@ -218,25 +159,22 @@ const MyAds = () => {
 
           {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-start">
-              <AlertCircle className="text-red-500 mr-3 flex-shrink-0" size={20} />
-              <p className="text-red-700">{error}</p>
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center">
+              <AlertCircle size={20} className="mr-2" />
+              {error}
             </div>
           )}
 
-          {/* Ads Grid */}
+          {/* Loading State */}
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="card animate-pulse">
-                  <div className="h-48 bg-gray-200 rounded-lg mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                </div>
-              ))}
+            <div className="flex items-center justify-center py-20">
+              <div className="text-center">
+                <BarChart3 size={48} className="mx-auto text-gray-400 animate-pulse mb-4" />
+                <p className="text-gray-600">Loading your ads...</p>
+              </div>
             </div>
           ) : filteredAds.length === 0 ? (
-            <div className="text-center py-16">
+            <div className="text-center py-20">
               <BarChart3 size={64} className="mx-auto text-gray-300 mb-4" />
               <h3 className="text-xl font-semibold text-gray-700 mb-2">No ads found</h3>
               <p className="text-gray-500 mb-6">
@@ -293,47 +231,36 @@ const MyAds = () => {
                       </p>
                     )}
 
-                    {/* Links Section */}
-{(ad.website_url || ad.catalog_url || ad.whatsapp_link) && (
-  <div className="pt-2 border-t">
-    <p className="text-xs font-semibold text-gray-700 mb-2">Links:</p>
-    <div className="flex flex-wrap gap-2">
-      {ad.website_url && (
-        <a
-          href={ad.website_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 transition-colors flex items-center space-x-1"
-        >
-          <LinkIcon size={12} />
-          <span>Website</span>
-        </a>
-      )}
-      {ad.catalog_url && (
-        <a
-          href={ad.catalog_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded hover:bg-purple-100 transition-colors flex items-center space-x-1"
-        >
-          <FileText size={12} />
-          <span>Catalog</span>
-        </a>
-      )}
-      {ad.whatsapp_link && (
-        <a
-          href={ad.whatsapp_link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded hover:bg-green-100 transition-colors flex items-center space-x-1"
-        >
-          <MessageCircle size={12} />
-          <span>WhatsApp</span>
-        </a>
-      )}
-    </div>
-  </div>
-)}
+                    {/* Links Section - Website and Catalog only */}
+                    {(ad.website_url || ad.catalog_url) && (
+                      <div className="pt-2 border-t">
+                        <p className="text-xs font-semibold text-gray-700 mb-2">Links:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {ad.website_url && (
+                            <a
+                              href={ad.website_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 transition-colors flex items-center space-x-1"
+                            >
+                              <LinkIcon size={12} />
+                              <span>Website</span>
+                            </a>
+                          )}
+                          {ad.catalog_url && (
+                            <a
+                              href={ad.catalog_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded hover:bg-purple-100 transition-colors flex items-center space-x-1"
+                            >
+                              <FileText size={12} />
+                              <span>Catalog</span>
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Rejection Reason */}
                     {ad.status === 'rejected' && ad.rejection_reason && (
@@ -345,25 +272,6 @@ const MyAds = () => {
                         <p className="text-xs text-red-700">{ad.rejection_reason}</p>
                       </div>
                     )}
-
-                    {/* Analytics */}
-                    <div className="flex items-center justify-between text-sm text-gray-600 pt-3 border-t">
-                      <div className="flex items-center space-x-4">
-                        <div className="flex items-center space-x-1">
-                          <Eye size={16} />
-                          <span>{ad.total_impressions || 0}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <MousePointerClick size={16} />
-                          <span>{ad.total_clicks || 0}</span>
-                        </div>
-                      </div>
-                      <span className="font-medium text-cyan-600">
-                        {ad.total_impressions > 0 
-                          ? `${((ad.total_clicks / ad.total_impressions) * 100).toFixed(1)}% CTR`
-                          : '0% CTR'}
-                      </span>
-                    </div>
 
                     {/* Action Buttons */}
                     <div className="space-y-2 pt-3">
