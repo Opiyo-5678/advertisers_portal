@@ -30,8 +30,6 @@ const Calendar = () => {
   const [selectedPlacement, setSelectedPlacement] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
-  const [availabilityMessage, setAvailabilityMessage] = useState('');
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalDays, setTotalDays] = useState(0);
 
@@ -41,9 +39,6 @@ const Calendar = () => {
 
   useEffect(() => {
     calculatePrice();
-    if (selectedPlacement && startDate && endDate) {
-      checkAvailability();
-    }
   }, [startDate, endDate, selectedPlacement]);
 
   const fetchData = async () => {
@@ -76,30 +71,6 @@ const Calendar = () => {
     }
   };
 
-  const checkAvailability = async () => {
-    if (!selectedPlacement || !startDate || !endDate) return;
-
-    setIsCheckingAvailability(true);
-    try {
-      const response = await placementsAPI.checkAvailability(
-        selectedPlacement,
-        startDate,
-        endDate
-      );
-
-      if (response.data.is_available) {
-        setAvailabilityMessage('✓ Dates are available!');
-      } else {
-        setAvailabilityMessage('⚠ These dates are already booked. Please choose different dates.');
-      }
-    } catch (error) {
-      console.error('Error checking availability:', error);
-      setAvailabilityMessage('');
-    } finally {
-      setIsCheckingAvailability(false);
-    }
-  };
-
   const calculatePrice = () => {
     if (!startDate || !endDate || !selectedPlacement) {
       setTotalPrice(0);
@@ -125,11 +96,6 @@ const Calendar = () => {
       return;
     }
 
-    if (availabilityMessage.includes('⚠')) {
-      showToastMessage('Please choose available dates', 'error');
-      return;
-    }
-
     try {
       const bookingData = {
         ad_id: parseInt(selectedAd),
@@ -147,7 +113,6 @@ const Calendar = () => {
       setSelectedPlacement('');
       setStartDate('');
       setEndDate('');
-      setAvailabilityMessage('');
       
       // Refresh data
       fetchData();
@@ -213,45 +178,33 @@ const Calendar = () => {
     // Days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-      const bookingsOnDate = getBookingsForDate(date);
-      const isBooked = bookingsOnDate.length > 0;
-      const isSelected = isDateInRange(date);
-      const isToday = new Date().toDateString() === date.toDateString();
+      const isBooked = isDateBooked(date);
+      const isInRange = isDateInRange(date);
+      const dayBookings = getBookingsForDate(date);
+      const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
 
       days.push(
         <div
           key={day}
-          className={`p-2 min-h-[80px] border border-gray-200 rounded-lg relative ${
-            isToday ? 'bg-cyan-50 border-cyan-300' : 'bg-white'
-          } ${isBooked ? 'bg-red-50' : ''} ${isSelected ? 'bg-green-100 border-green-400' : ''}`}
+          className={`
+            p-2 border rounded-lg text-center cursor-pointer transition-all
+            ${isInRange ? 'bg-green-100 border-green-400 border-2' : ''}
+            ${isBooked && !isInRange ? 'bg-red-50 border-red-300' : 'bg-white border-gray-200'}
+            ${isPast ? 'opacity-50' : 'hover:bg-gray-50'}
+          `}
         >
-          <div className={`text-sm font-semibold ${isToday ? 'text-cyan-700' : 'text-gray-700'}`}>
-            {day}
-          </div>
-          
-          {/* Show bookings on this date */}
-          {bookingsOnDate.length > 0 && (
-            <div className="mt-1 space-y-1">
-              {bookingsOnDate.slice(0, 2).map((booking, idx) => (
-                <div
+          <div className="font-semibold text-navy-800">{day}</div>
+          {dayBookings.length > 0 && (
+            <div className="mt-1">
+              {dayBookings.map((booking, idx) => (
+                <div 
                   key={idx}
-                  className="text-xs bg-red-100 text-red-800 px-1 py-0.5 rounded truncate"
-                  title={`${booking.ad_title} - ${booking.placement_name}`}
+                  className="text-xs bg-red-100 text-red-700 rounded px-1 py-0.5 mb-1 truncate"
+                  title={booking.ad_title}
                 >
-                  {booking.placement_name}
+                  {booking.ad_title?.substring(0, 10)}...
                 </div>
               ))}
-              {bookingsOnDate.length > 2 && (
-                <div className="text-xs text-gray-600">
-                  +{bookingsOnDate.length - 2} more
-                </div>
-              )}
-            </div>
-          )}
-
-          {isSelected && (
-            <div className="absolute top-1 right-1">
-              <Check size={14} className="text-green-600" />
             </div>
           )}
         </div>
@@ -260,13 +213,13 @@ const Calendar = () => {
 
     return (
       <div>
-        {/* Calendar Header */}
+        {/* Month Navigation */}
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-lg transition"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={24} />
           </button>
           
           <h3 className="text-xl font-bold text-navy-800">
@@ -275,16 +228,16 @@ const Calendar = () => {
           
           <button
             onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-lg transition"
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={24} />
           </button>
         </div>
 
-        {/* Day Labels */}
+        {/* Day Headers */}
         <div className="grid grid-cols-7 gap-2 mb-2">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="text-center text-sm font-semibold text-gray-600 p-2">
+            <div key={day} className="text-center font-semibold text-gray-600 text-sm py-2">
               {day}
             </div>
           ))}
@@ -296,13 +249,9 @@ const Calendar = () => {
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap gap-4 mt-4 text-sm">
+        <div className="flex items-center space-x-6 mt-6 text-sm">
           <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 bg-cyan-50 border-2 border-cyan-300 rounded"></div>
-            <span>Today</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 bg-red-50 border border-gray-200 rounded"></div>
+            <div className="w-4 h-4 bg-red-50 border-2 border-red-300 rounded"></div>
             <span>Booked</span>
           </div>
           <div className="flex items-center space-x-2">
@@ -466,17 +415,6 @@ const Calendar = () => {
                     />
                   </div>
 
-                  {/* Availability Message */}
-                  {availabilityMessage && (
-                    <div className={`p-3 rounded-lg text-sm ${
-                      availabilityMessage.includes('✓') 
-                        ? 'bg-green-50 text-green-700 border border-green-200'
-                        : 'bg-yellow-50 text-yellow-700 border border-yellow-200'
-                    }`}>
-                      {availabilityMessage}
-                    </div>
-                  )}
-
                   {/* Price Summary */}
                   {totalPrice > 0 && (
                     <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-4">
@@ -496,7 +434,7 @@ const Calendar = () => {
                   {/* Book Button */}
                   <button
                     onClick={handleBooking}
-                    disabled={!selectedAd || !selectedPlacement || !startDate || !endDate || availabilityMessage.includes('⚠')}
+                    disabled={!selectedAd || !selectedPlacement || !startDate || !endDate}
                     className="w-full btn-primary flex items-center justify-center space-x-2"
                   >
                     <CalendarIcon size={20} />
