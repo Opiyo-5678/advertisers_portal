@@ -1,3 +1,25 @@
+/*
+ * ============================================================================
+ * FAQPage.jsx - COMMENTED OUT
+ * ============================================================================
+ * 
+ * REASON: Removing "traditional advertising" marketing content
+ * 
+ * This file contained marketing fluff including:
+ * - FAQ system with backend API integration
+ * - Search and category filtering
+ * - "Was this helpful" feedback system
+ * - Contact support CTA section
+ * - Popular resources marketing section
+ * - Full navigation and footer
+ * 
+ * DATE COMMENTED: October 27, 2025
+ * 
+ * NOTE: Keeping this file for reference. To restore, uncomment the code below
+ * ============================================================================
+ */
+
+/* 
 import React, { useState, useEffect } from 'react';
 import { Search, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, MessageCircle, Mail, Phone } from 'lucide-react';
 
@@ -59,7 +81,7 @@ const FAQPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation - Navy Blue Header */}
+      {/* Navigation - Navy Blue Header *\/}
       <nav className="bg-[#1E3A8A] shadow-lg">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
@@ -84,7 +106,7 @@ const FAQPage = () => {
         </div>
       </nav>
 
-      {/* Header - Navy Background */}
+      {/* Header - Navy Background *\/}
       <section className="bg-gradient-to-br from-[#1E3A8A] to-[#1E40AF] text-white py-20">
         <div className="container mx-auto px-4">
           <h1 className="text-5xl font-bold text-center mb-6">
@@ -94,7 +116,7 @@ const FAQPage = () => {
             Find answers to common questions about our advertising platform
           </p>
 
-          {/* Search Bar */}
+          {/* Search Bar *\/}
           <div className="max-w-3xl mx-auto">
             <div className="relative">
               <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
@@ -110,7 +132,7 @@ const FAQPage = () => {
         </div>
       </section>
 
-      {/* Category Filter */}
+      {/* Category Filter *\/}
       <section className="container mx-auto px-4 py-8 -mt-6 relative z-10">
         <div className="flex flex-wrap gap-3 justify-center">
           <button
@@ -139,7 +161,7 @@ const FAQPage = () => {
         </div>
       </section>
 
-      {/* FAQ Content */}
+      {/* FAQ Content *\/}
       <section className="container mx-auto px-4 pb-20">
         {filteredFaqs.length === 0 ? (
           <div className="text-center py-20">
@@ -194,7 +216,7 @@ const FAQPage = () => {
                             dangerouslySetInnerHTML={{ __html: faq.answer }}
                           />
 
-                          {/* Helpful Buttons */}
+                          {/* Helpful Buttons *\/}
                           <div className="flex items-center gap-4 pt-6 border-t border-gray-200">
                             <span className="text-sm text-gray-600 font-medium">Was this helpful?</span>
                             <button
@@ -223,7 +245,7 @@ const FAQPage = () => {
         )}
       </section>
 
-      {/* Contact Support CTA - Navy Background */}
+      {/* Contact Support CTA - Navy Background *\/}
       <section className="bg-[#1E3A8A] text-white py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -263,7 +285,7 @@ const FAQPage = () => {
         </div>
       </section>
 
-      {/* Popular Resources */}
+      {/* Popular Resources *\/}
       <section className="bg-gray-50 py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-[#1E3A8A] mb-12">
@@ -301,7 +323,7 @@ const FAQPage = () => {
         </div>
       </section>
 
-      {/* Footer - Navy Background */}
+      {/* Footer - Navy Background *\/}
       <footer className="bg-[#0F1F47] text-gray-300 py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
@@ -347,5 +369,8 @@ const FAQPage = () => {
 };
 
 export default FAQPage;
+*/
 
-
+// Placeholder export to prevent errors if this file is still imported somewhere
+const FAQPage = () => null;
+export default FAQPage;
