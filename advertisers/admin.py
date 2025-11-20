@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils import timezone
 from django.utils.html import format_html
 from .models import (
     # Existing models
@@ -7,7 +8,7 @@ from .models import (
     # New marketing models
     PlatformBenefit, FAQ, Testimonial, CaseStudy,
     PricingFeature, EnhancedPricingPackage, PackageFeature,
-    PromotionalBanner, PlatformStatistic
+    PromotionalBanner, PlatformStatistic, Venue, Event
 )
 
 
@@ -165,8 +166,9 @@ class PlatformStatisticAdmin(admin.ModelAdmin):
     list_editable = ['display_order', 'is_active']
     list_filter = ['is_active']
     search_fields = ['label', 'value', 'description']
-    
-    @admin.register(Venue)
+
+
+@admin.register(Venue)
 class VenueAdmin(admin.ModelAdmin):
     list_display = ['name', 'city', 'venue_type', 'is_active', 'created_at']
     list_filter = ['venue_type', 'city', 'is_active']
