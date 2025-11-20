@@ -18,30 +18,8 @@ from .views import (
     EnhancedPricingPackageViewSet,
     PromotionalBannerViewSet,
     PlatformStatisticViewSet,
-    MarketingOverviewViewSet,
-    # NEW: Event ViewSets
-    VenueViewSet,
-    EventViewSet,
-)
-from .views import (
-    # Existing ViewSets
-    PricingPackageViewSet,
-    AdPlacementViewSet,
-    AdViewSet,
-    UploadedFileViewSet,
-    BookingViewSet,
-    MessageViewSet,
-    NotificationViewSet,
-    # New Marketing ViewSets
-    PlatformBenefitViewSet,
-    FAQViewSet,
-    TestimonialViewSet,
-    CaseStudyViewSet,
-    PricingFeatureViewSet,
-    EnhancedPricingPackageViewSet,
-    PromotionalBannerViewSet,
-    PlatformStatisticViewSet,
     MarketingOverviewViewSet
+    # REMOVED: VenueViewSet, EventViewSet - separate project
 )
 
 router = DefaultRouter()
@@ -55,7 +33,7 @@ router.register(r'bookings', BookingViewSet, basename='booking')
 router.register(r'messages', MessageViewSet, basename='message')
 router.register(r'notifications', NotificationViewSet, basename='notification')
 
-# New marketing routes
+# Marketing routes
 router.register(r'marketing/benefits', PlatformBenefitViewSet, basename='benefit')
 router.register(r'marketing/faqs', FAQViewSet, basename='faq')
 router.register(r'marketing/testimonials', TestimonialViewSet, basename='testimonial')
@@ -65,9 +43,10 @@ router.register(r'marketing/enhanced-pricing', EnhancedPricingPackageViewSet, ba
 router.register(r'marketing/banners', PromotionalBannerViewSet, basename='banner')
 router.register(r'marketing/statistics', PlatformStatisticViewSet, basename='statistic')
 router.register(r'marketing/overview', MarketingOverviewViewSet, basename='overview')
-# Event calendar routes
-router.register(r'venues', VenueViewSet, basename='venue')
-router.register(r'events', EventViewSet, basename='event')
+
+# REMOVED: Event calendar routes - separate project
+# router.register(r'venues', VenueViewSet, basename='venue')
+# router.register(r'events', EventViewSet, basename='event')
 
 urlpatterns = [
     path('', include(router.urls)),
