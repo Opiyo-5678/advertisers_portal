@@ -93,7 +93,8 @@ const LandingPage = () => {
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
               <h3 className="font-semibold text-gray-800 mb-2">Why Choose Us?</h3>
               <p className="text-sm text-gray-600">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Professional advertising management platform with calendar booking and secure file uploads.
+                Professional advertising management platform with secure file uploads, calendar-based booking, 
+    real-time availability checking, and comprehensive campaign analytics. Start advertising smarter today.
               </p>
             </div>
           </div>
