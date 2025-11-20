@@ -6,31 +6,31 @@ const LandingPage = () => {
 
   // Placeholder accordion content (Lorem ipsum)
   const accordionItems = [
-    {
-      title: "What is the Advertiser Portal?",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-    },
-    {
-      title: "How to Get Started",
-      content: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem."
-    },
-    {
-      title: "Advertising Features",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis."
-    },
-    {
-      title: "Pricing & Packages",
-      content: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
-    },
-    {
-      title: "Calendar Booking System",
-      content: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    },
-    {
-      title: "Support & Resources",
-      content: "Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
-    }
-  ];
+  {
+    title: "What is the Advertiser Portal?",
+    content: "The Advertiser Portal is your complete solution for managing online advertising campaigns. Create professional ads with images and content, book advertising placements through our calendar system, and track your campaign performance with built-in analytics. Everything you need to run successful advertising campaigns in one place."
+  },
+  {
+    title: "How to Get Started",
+    content: "Getting started is simple. First, create your free account by clicking 'Sign Up'. Once registered, you can immediately begin creating your first advertisement by uploading images, adding your content, and including website links. After your ad is approved, browse available advertising slots in our calendar and book the dates that work best for your campaign."
+  },
+  {
+    title: "Advertising Features",
+    content: "Our platform offers powerful features to make your advertising effective. Upload multiple images with automatic malware scanning for security. Add rich text descriptions and compelling calls-to-action. Include links to your website and product catalogs. Choose between simple webflyer-style ads or detailed full-format advertisements with complete information."
+  },
+  {
+    title: "Pricing & Packages",
+    content: "We offer flexible pricing to suit businesses of all sizes. Advertising packages are available with monthly, quarterly, and yearly billing options. All ads require a minimum 3-month commitment to ensure consistent campaign visibility. Browse our pricing page to find the perfect package for your advertising budget and goals."
+  },
+  {
+    title: "Calendar Booking System",
+    content: "Our intuitive calendar system makes booking advertising slots effortless. View available dates in real-time, check placement availability, and reserve your preferred time slots instantly. The calendar shows all confirmed bookings, prevents double-booking conflicts, and lets you manage multiple campaigns simultaneously. Choose between main placements or regional targeting for your ads."
+  },
+  {
+    title: "Support & Resources",
+    content: "We're here to help you succeed. Access our comprehensive FAQ section for quick answers to common questions. Need personalized assistance? Our support team is available through the messaging system in your dashboard. All ads go through a review process to ensure quality, and we'll guide you through any needed revisions to get your campaigns live quickly."
+  }
+];
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">

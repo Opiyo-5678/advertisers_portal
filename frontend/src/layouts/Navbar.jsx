@@ -47,9 +47,9 @@ const Navbar = () => {
             <Link to="/dashboard/calendar" className="text-white px-4 py-2 rounded-md hover:bg-cyan-600 transition-all">
               Calendar
             </Link>
-            <Link to="/events" className="text-white px-4 py-2 rounded-md hover:bg-cyan-600 transition-all">
+            {/* <Link to="/events" className="text-white px-4 py-2 rounded-md hover:bg-cyan-600 transition-all">
     Events
-  </Link>
+  </Link> */}
           </div>
 
           {/* Right side - Desktop */}
@@ -125,13 +125,13 @@ const Navbar = () => {
             >
               Calendar
             </Link>
-            <Link
+            {/* <Link
       to="/events"
       className="block py-2 px-4 text-white hover:bg-cyan-600 rounded-lg transition-all"
       onClick={() => setShowMobileMenu(false)}
     >
       Events
-    </Link>
+    </Link> */}
             <button
               onClick={handleLogout}
               className="w-full text-left py-2 px-4 text-white hover:bg-cyan-600 rounded-lg transition-all"

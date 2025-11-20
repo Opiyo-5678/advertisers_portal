@@ -51,7 +51,7 @@ const Dashboard = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-navy-800">
-              Welcome back, {user?.first_name || user?.username}! 👋
+              Welcome back, {user?.first_name || user?.username}! 
             </h1>
             <p className="text-dark-grey-600 mt-1">
               Here's what's happening with your ads today.
