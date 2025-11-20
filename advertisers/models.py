@@ -849,3 +849,97 @@ class PlatformStatistic(models.Model):
     
     def __str__(self):
         return f"{self.label}: {self.value}"
+    
+    class Event(models.Model):
+        """
+    Culture and entertainment events (films, theater, concerts)
+    """
+    STATUS_CHOICES = [
+        ('pending', 'Pending Review'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('published', 'Published'),
+    ]
+    
+    CATEGORY_CHOICES = [
+        ('film', 'Film'),
+        ('theater', 'Theater'),
+        ('concert', 'Concert'),
+    ]
+    
+    # Submission
+    submitted_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='submitted_events'
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    
+    # Event Details (TIGHT FORMAT - all required)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    title = models.CharField(max_length=200, help_text="Event name")
+    venue_name = models.CharField(max_length=200, help_text="Theater/venue name")
+    city = models.CharField(max_length=100)
+    
+    # Date & Time
+    event_date = models.DateField()
+    event_time = models.TimeField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True, help_text="For multi-day events")
+    
+    # Optional Details
+    description = models.TextField(max_length=500, blank=True, help_text="Brief description (max 500 chars)")
+    ticket_link = models.URLField(blank=True, null=True, help_text="Link to buy tickets")
+    image = models.ImageField(upload_to='events/', blank=True, null=True)
+    
+    # Admin Review
+    reviewed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='reviewed_events'
+    )
+    reviewed_at = models.DateTimeField(blank=True, null=True)
+    rejection_reason = models.TextField(blank=True, null=True)
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'events'
+        ordering = ['event_date', 'event_time']
+        indexes = [
+            models.Index(fields=['status', 'event_date']),
+            models.Index(fields=['category', 'city']),
+        ]
+    
+    def __str__(self):
+        return f"{self.title} - {self.venue_name} ({self.event_date})"
+
+
+class Venue(models.Model):
+    """
+    Pre-approved venues to ensure consistency
+    """
+    name = models.CharField(max_length=200, unique=True)
+    city = models.CharField(max_length=100)
+    address = models.CharField(max_length=300, blank=True)
+    venue_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('cinema', 'Cinema'),
+            ('theater', 'Theater'),
+            ('concert_hall', 'Concert Hall'),
+            ('multi_purpose', 'Multi-Purpose'),
+        ]
+    )
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = 'venues'
+        ordering = ['city', 'name']
+    
+    def __str__(self):
+        return f"{self.name} - {self.city}"

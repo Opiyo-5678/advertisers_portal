@@ -25,6 +25,14 @@ from rest_framework.response import Response
 from django.db.models import Q, Count
 from django.utils import timezone
 from collections import defaultdict
+from .models import (
+    # ... existing imports ...
+    Event, Venue  # ADD THIS
+)
+from .serializers import (
+    # ... existing imports ...
+    EventSerializer, EventListSerializer, VenueSerializer  # ADD THIS
+)
 
 from .models import (
     PricingPackage, AdPlacement, Ad, UploadedFile,
@@ -774,3 +782,124 @@ class MarketingOverviewViewSet(viewsets.ViewSet):
             'active_banners': PromotionalBannerSerializer(banners, many=True).data,
             'pricing_packages': EnhancedPricingPackageSerializer(pricing, many=True).data,
         })
+        
+        class VenueViewSet(viewsets.ReadOnlyModelViewSet):
+        """List available venues"""
+    queryset = Venue.objects.filter(is_active=True)
+    serializer_class = VenueSerializer
+    permission_classes = [permissions.AllowAny]
+    filterset_fields = ['city', 'venue_type']
+
+
+class EventViewSet(viewsets.ModelViewSet):
+    """Event calendar management"""
+    queryset = Event.objects.all()
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filterset_fields = ['category', 'city', 'status']
+    search_fields = ['title', 'venue_name', 'city']
+    ordering_fields = ['event_date', 'created_at']
+    
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return EventListSerializer
+        return EventSerializer
+    
+    def get_queryset(self):
+        # Public: only see published events
+        if not self.request.user.is_authenticated:
+            return Event.objects.filter(status='published', event_date__gte=timezone.now().date())
+        
+        # Staff: see all
+        if self.request.user.is_staff:
+            return Event.objects.all()
+        
+        # Users: see published + their own submissions
+        return Event.objects.filter(
+            Q(status='published') | Q(submitted_by=self.request.user)
+        )
+    
+    def perform_create(self, serializer):
+        serializer.save(submitted_by=self.request.user)
+        
+        # Notify admins
+        try:
+            admin_emails = User.objects.filter(is_staff=True, is_active=True).values_list('email', flat=True)
+            if admin_emails:
+                send_mail(
+                    '[AdPortal] New Event Submission',
+                    f'New event "{serializer.validated_data["title"]}" submitted by {self.request.user.username}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    admin_emails,
+                    fail_silently=True,
+                )
+        except Exception as e:
+            print(f"Failed to send admin notification: {e}")
+    
+    @action(detail=False, methods=['get'])
+    def upcoming(self, request):
+        """Get upcoming published events"""
+        events = Event.objects.filter(
+            status='published',
+            event_date__gte=timezone.now().date()
+        ).order_by('event_date', 'event_time')[:20]
+        serializer = EventListSerializer(events, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def my_submissions(self, request):
+        """User's submitted events"""
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        events = Event.objects.filter(submitted_by=request.user)
+        serializer = self.get_serializer(events, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
+    def approve(self, request, pk=None):
+        """Approve event (admin only)"""
+        event = self.get_object()
+        event.status = 'published'
+        event.reviewed_by = request.user
+        event.reviewed_at = timezone.now()
+        event.save()
+        
+        # Notify submitter
+        try:
+            send_mail(
+                '[AdPortal] Event Approved',
+                f'Your event "{event.title}" has been approved and is now live!',
+                settings.DEFAULT_FROM_EMAIL,
+                [event.submitted_by.email],
+                fail_silently=True,
+            )
+        except Exception as e:
+            print(f"Failed to send approval notification: {e}")
+        
+        return Response({'message': 'Event approved'})
+    
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
+    def reject(self, request, pk=None):
+        """Reject event (admin only)"""
+        event = self.get_object()
+        reason = request.data.get('reason', 'Does not meet guidelines')
+        
+        event.status = 'rejected'
+        event.rejection_reason = reason
+        event.reviewed_by = request.user
+        event.reviewed_at = timezone.now()
+        event.save()
+        
+        # Notify submitter
+        try:
+            send_mail(
+                '[AdPortal] Event Update Required',
+                f'Your event "{event.title}" needs updates. Reason: {reason}',
+                settings.DEFAULT_FROM_EMAIL,
+                [event.submitted_by.email],
+                fail_silently=True,
+            )
+        except Exception as e:
+            print(f"Failed to send rejection notification: {e}")
+        
+        return Response({'message': 'Event rejected'})

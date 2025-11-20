@@ -9,6 +9,29 @@ from .views import (
     BookingViewSet,
     MessageViewSet,
     NotificationViewSet,
+    # Marketing ViewSets
+    PlatformBenefitViewSet,
+    FAQViewSet,
+    TestimonialViewSet,
+    CaseStudyViewSet,
+    PricingFeatureViewSet,
+    EnhancedPricingPackageViewSet,
+    PromotionalBannerViewSet,
+    PlatformStatisticViewSet,
+    MarketingOverviewViewSet,
+    # NEW: Event ViewSets
+    VenueViewSet,
+    EventViewSet,
+)
+from .views import (
+    # Existing ViewSets
+    PricingPackageViewSet,
+    AdPlacementViewSet,
+    AdViewSet,
+    UploadedFileViewSet,
+    BookingViewSet,
+    MessageViewSet,
+    NotificationViewSet,
     # New Marketing ViewSets
     PlatformBenefitViewSet,
     FAQViewSet,
@@ -42,6 +65,9 @@ router.register(r'marketing/enhanced-pricing', EnhancedPricingPackageViewSet, ba
 router.register(r'marketing/banners', PromotionalBannerViewSet, basename='banner')
 router.register(r'marketing/statistics', PlatformStatisticViewSet, basename='statistic')
 router.register(r'marketing/overview', MarketingOverviewViewSet, basename='overview')
+# Event calendar routes
+router.register(r'venues', VenueViewSet, basename='venue')
+router.register(r'events', EventViewSet, basename='event')
 
 urlpatterns = [
     path('', include(router.urls)),

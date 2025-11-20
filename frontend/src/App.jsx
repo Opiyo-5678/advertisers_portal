@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './layouts/DashboardLayout';
+import Events from './pages/Events';
+import SubmitEvent from './pages/SubmitEvent';
 
 // Public Pages (No Login Required)
 import Login from './pages/Login';
@@ -51,6 +53,8 @@ function App() {
             <Route path="ads/create" element={<CreateAd />} />  {/* /dashboard/ads/create */}
             <Route path="bookings" element={<MyBookings />} />  {/* /dashboard/bookings */}
             <Route path="calendar" element={<Calendar />} />  {/* /dashboard/calendar */}
+            <Route path="/events" element={<Events />} />
+<Route path="/events/submit" element={<SubmitEvent />} />
           </Route>
 
           {/* Redirect any unknown routes to home */}
