@@ -368,28 +368,4 @@ class PlatformStatisticSerializer(serializers.ModelSerializer):
         model = PlatformStatistic
         fields = ['id', 'label', 'value', 'icon', 'description', 'is_active', 'display_order']
         
-        class VenueSerializer(serializers.ModelSerializer):
-        class Meta:
-        model = Venue
-        fields = '__all__'
-
-
-class EventListSerializer(serializers.ModelSerializer):
-    """Lighter version for listing"""
-    category_display = serializers.CharField(source='get_category_display', read_only=True)
-    
-    class Meta:
-        model = Event
-        fields = ['id', 'title', 'category', 'category_display', 'venue_name', 
-                  'city', 'event_date', 'event_time', 'image', 'description']
-
-
-class EventSerializer(serializers.ModelSerializer):
-    submitted_by_username = serializers.CharField(source='submitted_by.username', read_only=True)
-    category_display = serializers.CharField(source='get_category_display', read_only=True)
-    status_display = serializers.CharField(source='get_status_display', read_only=True)
-    
-    class Meta:
-        model = Event
-        fields = '__all__'
-        read_only_fields = ['submitted_by', 'status', 'reviewed_by', 'reviewed_at']
+       
