@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.utils import timezone
+
 from django.utils.html import format_html
 from .models import (
     # Existing models
@@ -8,7 +8,7 @@ from .models import (
     # New marketing models
     PlatformBenefit, FAQ, Testimonial, CaseStudy,
     PricingFeature, EnhancedPricingPackage, PackageFeature,
-    PromotionalBanner, PlatformStatistic, Venue, Event
+    PromotionalBanner, PlatformStatistic
 )
 
 
@@ -168,46 +168,3 @@ class PlatformStatisticAdmin(admin.ModelAdmin):
     search_fields = ['label', 'value', 'description']
 
 
-@admin.register(Venue)
-class VenueAdmin(admin.ModelAdmin):
-    list_display = ['name', 'city', 'venue_type', 'is_active', 'created_at']
-    list_filter = ['venue_type', 'city', 'is_active']
-    search_fields = ['name', 'city', 'address']
-
-
-@admin.register(Event)
-class EventAdmin(admin.ModelAdmin):
-    list_display = ['title', 'category', 'venue_name', 'city', 'event_date', 'status', 'submitted_by']
-    list_filter = ['status', 'category', 'city', 'event_date']
-    search_fields = ['title', 'venue_name', 'city', 'description']
-    readonly_fields = ['submitted_by', 'created_at', 'updated_at']
-    
-    fieldsets = (
-        ('Event Details', {
-            'fields': ('category', 'title', 'venue_name', 'city', 'event_date', 'event_time', 'end_date')
-        }),
-        ('Content', {
-            'fields': ('description', 'image', 'ticket_link')
-        }),
-        ('Submission', {
-            'fields': ('submitted_by', 'status', 'rejection_reason')
-        }),
-        ('Review', {
-            'fields': ('reviewed_by', 'reviewed_at')
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at')
-        }),
-    )
-    
-    actions = ['approve_events', 'reject_events']
-    
-    def approve_events(self, request, queryset):
-        queryset.update(status='published', reviewed_by=request.user, reviewed_at=timezone.now())
-        self.message_user(request, f'{queryset.count()} events approved')
-    approve_events.short_description = 'Approve selected events'
-    
-    def reject_events(self, request, queryset):
-        queryset.update(status='rejected', reviewed_by=request.user, reviewed_at=timezone.now())
-        self.message_user(request, f'{queryset.count()} events rejected')
-    reject_events.short_description = 'Reject selected events'

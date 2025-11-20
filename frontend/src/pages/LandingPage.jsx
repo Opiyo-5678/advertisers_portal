@@ -1,25 +1,35 @@
 import { useNavigate } from 'react-router-dom';
 import Accordion from '../components/Accordion';
-import { 
-  Upload, 
-  FileText, 
-  Link2, 
-  Calendar, 
-  CheckCircle2,
-  CreditCard
-} from 'lucide-react';
 
 const LandingPage = () => {
   const navigate = useNavigate();
 
-  const features = [
-    { icon: <Upload className="w-5 h-5" />, text: "Upload logos and advertising files (with malware protection)" },
-    { icon: <FileText className="w-5 h-5" />, text: "Write ad content using text editor" },
-    { icon: <Link2 className="w-5 h-5" />, text: "Add links to your website/catalogs" },
-    { icon: <Calendar className="w-5 h-5" />, text: "Browse available advertising placements" },
-    { icon: <CheckCircle2 className="w-5 h-5" />, text: "Check availability using calendar" },
-    { icon: <CreditCard className="w-5 h-5" />, text: "Book advertising slots for specific periods" },
-    { icon: <CheckCircle2 className="w-5 h-5" />, text: "Make and track payments" },
+  // Placeholder accordion content (Lorem ipsum)
+  const accordionItems = [
+    {
+      title: "What is the Advertiser Portal?",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    },
+    {
+      title: "How to Get Started",
+      content: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem."
+    },
+    {
+      title: "Advertising Features",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis."
+    },
+    {
+      title: "Pricing & Packages",
+      content: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+    },
+    {
+      title: "Calendar Booking System",
+      content: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    },
+    {
+      title: "Support & Resources",
+      content: "Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
+    }
   ];
 
   return (
@@ -39,26 +49,12 @@ const LandingPage = () => {
         {/* SPLIT CONTENT */}
         <div className="grid md:grid-cols-2 gap-8 p-8 md:p-12">
           
-          {/* LEFT SIDE: Features List */}
+          {/* LEFT SIDE: Accordion */}
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              What you can do after registering:
+              Information & Features
             </h2>
-            <div className="space-y-4">
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="flex items-start gap-3 p-3 rounded-lg hover:bg-blue-50 transition-colors"
-                >
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white flex-shrink-0">
-                    {feature.icon}
-                  </div>
-                  <span className="text-gray-700 pt-2">
-                    {feature.text}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <Accordion items={accordionItems} />
           </div>
 
           {/* RIGHT SIDE: Buttons */}
@@ -92,6 +88,14 @@ const LandingPage = () => {
             <p className="text-center text-gray-600 text-sm">
               Explore all features without registration
             </p>
+
+            {/* Additional Information Box */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+              <h3 className="font-semibold text-gray-800 mb-2">Why Choose Us?</h3>
+              <p className="text-sm text-gray-600">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Professional advertising management platform with calendar booking and secure file uploads.
+              </p>
+            </div>
           </div>
 
         </div>
