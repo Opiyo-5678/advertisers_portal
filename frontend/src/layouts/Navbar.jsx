@@ -18,21 +18,23 @@ const Navbar = () => {
     <nav className="bg-cyan-500 text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to="/dashboard" className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center font-bold text-xl text-cyan-600">
-              A
-            </div>
-            <span className="text-xl font-bold text-white">AdPortal</span>
-          </Link>
-
-           <Link 
-    to="/" 
-    className="text-white px-3 py-1 rounded-md hover:bg-cyan-600 transition-all border border-white/30"
-  >
-    Home
-  </Link>
-</div>
+          {/* Logo + Home Button */}
+          <div className="flex items-center space-x-4">
+            <Link to="/dashboard" className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center font-bold text-xl text-cyan-600">
+                A
+              </div>
+              <span className="text-xl font-bold text-white">AdPortal</span>
+            </Link>
+            
+            {/* NEW: Persistent Home button */}
+            <Link 
+              to="/" 
+              className="text-white px-3 py-1 rounded-md hover:bg-cyan-600 transition-all border border-white/30"
+            >
+              Home
+            </Link>
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
@@ -92,14 +94,13 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         {showMobileMenu && (
           <div className="md:hidden pb-4">
-            {/* Add this FIRST in mobile menu */}
-<Link
-  to="/"
-  className="block py-2 px-4 text-white hover:bg-cyan-600 rounded-lg transition-all font-semibold border-b border-cyan-400"
-  onClick={() => setShowMobileMenu(false)}
->
-   Home
-</Link>
+            <Link
+              to="/"
+              className="block py-2 px-4 text-white hover:bg-cyan-600 rounded-lg transition-all font-semibold border-b border-cyan-400"
+              onClick={() => setShowMobileMenu(false)}
+            >
+              🏠 Home
+            </Link>
             <Link
               to="/dashboard"
               className="block py-2 px-4 text-white hover:bg-cyan-600 rounded-lg transition-all"
