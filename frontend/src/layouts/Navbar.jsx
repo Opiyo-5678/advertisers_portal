@@ -26,6 +26,14 @@ const Navbar = () => {
             <span className="text-xl font-bold text-white">AdPortal</span>
           </Link>
 
+           <Link 
+    to="/" 
+    className="text-white px-3 py-1 rounded-md hover:bg-cyan-600 transition-all border border-white/30"
+  >
+    Home
+  </Link>
+</div>
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
             <Link to="/dashboard" className="text-white px-4 py-2 rounded-md hover:bg-cyan-600 transition-all">
@@ -84,6 +92,14 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         {showMobileMenu && (
           <div className="md:hidden pb-4">
+            {/* Add this FIRST in mobile menu */}
+<Link
+  to="/"
+  className="block py-2 px-4 text-white hover:bg-cyan-600 rounded-lg transition-all font-semibold border-b border-cyan-400"
+  onClick={() => setShowMobileMenu(false)}
+>
+   Home
+</Link>
             <Link
               to="/dashboard"
               className="block py-2 px-4 text-white hover:bg-cyan-600 rounded-lg transition-all"

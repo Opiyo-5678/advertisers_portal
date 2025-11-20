@@ -63,7 +63,7 @@ class AdPlacement(models.Model):
     # Specifications
     description = models.TextField(blank=True, null=True)
     dimensions = models.CharField(max_length=50, blank=True, null=True)  # e.g., '1200x400'
-    max_file_size_mb = models.IntegerField(default=5)
+    max_file_size_mb = models.IntegerField(default=3)
     
     # Availability
     is_active = models.BooleanField(default=True)
@@ -96,7 +96,20 @@ class Ad(models.Model):
         ('paused', 'Paused'),
     ]
     
+    # NEW: Ad Category Choices (same indentation as STATUS_CHOICES)
+    AD_CATEGORY_CHOICES = [
+        (1, 'Webflyer Style'),  # Images + Link only
+        (2, 'Irregular Format'),  # Full form
+    ]
+    
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='ads')
+    
+    # Ad Category (same indentation as other fields)
+    ad_category = models.IntegerField(
+        choices=AD_CATEGORY_CHOICES,
+        default=1,
+        help_text='Category 1: Webflyer (images+link), Category 2: Full details'
+    )
     
     # Content
     title = models.CharField(max_length=200)
