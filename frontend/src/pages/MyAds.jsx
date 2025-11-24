@@ -287,15 +287,14 @@ const MyAds = () => {
   )}
 
   {/* Statistics Button - Show for live ads */}
-  {ad.status === 'live' && (
-    <button
-      onClick={() => navigate(`/ads/${ad.id}/statistics`)}
-      className="w-full bg-green-600 text-white text-sm py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-1"
-    >
-      <BarChart3 size={16} />
-      <span>View Statistics</span>
-    </button>
-  )}
+ {/* Statistics Button - Show for all ads */}
+<button
+  onClick={() => navigate(`/dashboard/ads/${ad.id}/statistics`)}
+  className="w-full bg-green-600 text-white text-sm py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-1"
+>
+  <BarChart3 size={16} />
+  <span>View Statistics</span>
+</button>
 
   <div className="flex items-center space-x-2">
     <button
