@@ -9,6 +9,13 @@ import os
 from django.conf import settings
 import uuid
 from rest_framework import serializers
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from .models import Ad  # Add this if not already there
+
+import requests
+
 try:
     import clamd
     _HAS_CLAMD = True
@@ -774,4 +781,116 @@ class MarketingOverviewViewSet(viewsets.ViewSet):
             'pricing_packages': EnhancedPricingPackageSerializer(pricing, many=True).data,
         })
 
+
+# ==============================================================================
+# STATISTICS API VIEWS - Add these to the end of advertisers/views.py
+# ==============================================================================
+
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_ad_statistics(request, ad_id):
+    """
+    Get statistics for a specific ad
+    Fetches click data from DNN API
+    """
+    try:
+        # Check if ad belongs to user
+        ad = Ad.objects.get(id=ad_id, user=request.user)
+    except Ad.DoesNotExist:
+        return Response(
+            {'error': 'Ad not found or access denied'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    
+    # Prepare date ranges
+    today = timezone.now().date()
+    week_ago = today - timedelta(days=7)
+    thirty_days_ago = today - timedelta(days=30)
+    
+    # Call DNN API to get click data
+    dnn_api_url = getattr(settings, 'DNN_API_URL', 'http://webflyers.uk/api')
+    
+    try:
+        response = requests.get(
+            f"{dnn_api_url}/clicks/statistics",
+            params={'flyer_id': ad_id},
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            dnn_data = response.json()
+        else:
+            # Fallback to local data if DNN API fails
+            dnn_data = {
+                'total_clicks': ad.total_clicks,
+                'clicks_today': 0,
+                'clicks_this_week': 0,
+                'daily_data': [],
+                'device_breakdown': {'mobile': 0, 'desktop': 0}
+            }
+    except Exception as e:
+        # Fallback if DNN not reachable
+        dnn_data = {
+            'total_clicks': ad.total_clicks,
+            'clicks_today': 0,
+            'clicks_this_week': 0,
+            'daily_data': [],
+            'device_breakdown': {'mobile': 0, 'desktop': 0}
+        }
+    
+    return Response({
+        'ad_id': ad.id,
+        'ad_title': ad.title,
+        'ad_category': ad.get_category_display(),
+        'status': ad.status,
+        'total_clicks': dnn_data.get('total_clicks', 0),
+        'clicks_today': dnn_data.get('clicks_today', 0),
+        'clicks_this_week': dnn_data.get('clicks_this_week', 0),
+        'daily_data': dnn_data.get('daily_data', []),
+        'device_breakdown': dnn_data.get('device_breakdown', {}),
+        'start_date': ad.start_date,
+        'end_date': ad.end_date,
+    })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_ads_statistics(request):
+    """
+    Get statistics summary for all user's ads
+    """
+    user_ads = Ad.objects.filter(user=request.user, status='live')
+    
+    ads_stats = []
+    for ad in user_ads:
+        ads_stats.append({
+            'id': ad.id,
+            'title': ad.title,
+            'category': ad.get_category_display(),
+            'total_clicks': ad.total_clicks,
+            'status': ad.status,
+            'start_date': ad.start_date,
+        })
+    
+    return Response({
+        'ads': ads_stats,
+        'total_ads': user_ads.count(),
+        'total_clicks': sum(ad.total_clicks for ad in user_ads),
+    })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_categories(request):
+    """
+    Return list of merchandise categories
+    """
+    categories = [
+        {'value': key, 'label': label}
+        for key, label in Ad.MERCHANDISE_CATEGORY_CHOICES
+    ]
+    return Response({'categories': categories})
 # END OF FILE 

@@ -259,3 +259,6 @@ CKEDITOR_CONFIGS = {
         ]),
     },
 }
+
+
+DNN_API_URL = config('DNN_API_URL', default='http://webflyers.uk/api')

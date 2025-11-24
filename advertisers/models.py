@@ -96,19 +96,39 @@ class Ad(models.Model):
         ('paused', 'Paused'),
     ]
     
-    # NEW: Ad Category Choices (same indentation as STATUS_CHOICES)
-    AD_CATEGORY_CHOICES = [
-        (1, 'Webflyer Style'),  # Images + Link only
-        (2, 'Irregular Format'),  # Full form
+    # Ad Type Choices (renamed from Category)
+    AD_TYPE_CHOICES = [
+        (1, 'Type 1 - Webflyer Style'),
+        (2, 'Type 2 - Irregular Format'),
+    ]
+    
+    # Merchandise Category Choices
+    MERCHANDISE_CATEGORY_CHOICES = [
+        ('sports', 'Sports & Fitness'),
+        ('furniture', 'Home & Furniture'),
+        ('clothing', 'Clothing & Fashion'),
+        ('electronics', 'Electronics'),
+        ('food', 'Food & Beverages'),
+        ('beauty', 'Beauty & Health'),
+        ('automotive', 'Automotive'),
+        ('other', 'Other'),
     ]
     
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='ads')
     
-    # Ad Category (same indentation as other fields)
-    ad_category = models.IntegerField(
-        choices=AD_CATEGORY_CHOICES,
+    # Ad Type (renamed from ad_category)
+    ad_type = models.IntegerField(
+        choices=AD_TYPE_CHOICES,
         default=1,
-        help_text='Category 1: Webflyer (images+link), Category 2: Full details'
+        help_text='Type 1: Webflyer (images+link), Type 2: Full details'
+    )
+    
+    # Merchandise Category
+    category = models.CharField(
+        max_length=50,
+        choices=MERCHANDISE_CATEGORY_CHOICES,
+        default='other',
+        help_text='Product/service category for filtering'
     )
     
     # Content
@@ -162,6 +182,7 @@ class Ad(models.Model):
         indexes = [
             models.Index(fields=['status']),
             models.Index(fields=['start_date', 'end_date']),
+            models.Index(fields=['category']),
         ]
     
     def __str__(self):
@@ -849,9 +870,10 @@ class PlatformStatistic(models.Model):
     
     def __str__(self):
         return f"{self.label}: {self.value}"
-    
-    class Event(models.Model):
-        """
+
+
+class Event(models.Model):
+    """
     Culture and entertainment events (films, theater, concerts)
     """
     STATUS_CHOICES = [

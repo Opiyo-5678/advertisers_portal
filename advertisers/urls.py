@@ -1,5 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from . import views
+
 from .views import (
     # Existing ViewSets
     PricingPackageViewSet,
@@ -50,4 +52,7 @@ router.register(r'marketing/overview', MarketingOverviewViewSet, basename='overv
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('ads/<int:ad_id>/statistics/', views.get_ad_statistics, name='ad-statistics'),
+    path('ads/statistics/all/', views.get_all_ads_statistics, name='all-ads-statistics'),
+    path('categories/', views.get_categories, name='categories-list'),
 ]
