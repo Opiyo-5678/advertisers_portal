@@ -248,7 +248,7 @@ const CreateAd = () => {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-navy-800">
-              Create Ad - Category {adCategory}
+              Create Ad - Type {adCategory}
             </h1>
             <p className="text-dark-grey-600 mt-2">
               {adCategory === 1 ? 'Webflyer Style: Images + Link' : 'Irregular Format: Full Details'}
@@ -258,7 +258,7 @@ const CreateAd = () => {
             onClick={() => setAdCategory(null)}
             className="text-cyan-600 hover:text-cyan-700 underline"
           >
-            Change Category
+            Change Type
           </button>
         </div>
 
