@@ -334,13 +334,15 @@ const MyAds = () => {
                     </div>
                   )}
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+                 {/* ADD THESE TWO CLOSING DIVS */}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-    </>
-  );
+    </div>
+  </>
+);
 };
 
 export default MyAds;
