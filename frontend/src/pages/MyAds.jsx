@@ -273,43 +273,53 @@ const MyAds = () => {
                       </div>
                     )}
 
-                    {/* Action Buttons */}
-                    <div className="space-y-2 pt-3">
-                      {/* Submit for Review Button */}
-                      {(ad.status === 'draft' || ad.status === 'rejected') && (
-                        <button
-                          onClick={() => handleSubmitForReview(ad.id)}
-                          className="w-full btn-primary text-sm py-2 flex items-center justify-center space-x-1"
-                        >
-                          <Send size={16} />
-                          <span>{ad.status === 'rejected' ? 'Resubmit for Review' : 'Submit for Review'}</span>
-                        </button>
-                      )}
+                   {/* Action Buttons */}
+<div className="space-y-2 pt-3">
+  {/* Submit for Review Button */}
+  {(ad.status === 'draft' || ad.status === 'rejected') && (
+    <button
+      onClick={() => handleSubmitForReview(ad.id)}
+      className="w-full btn-primary text-sm py-2 flex items-center justify-center space-x-1"
+    >
+      <Send size={16} />
+      <span>{ad.status === 'rejected' ? 'Resubmit for Review' : 'Submit for Review'}</span>
+    </button>
+  )}
 
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => navigate(`/ads/${ad.id}`)}
-                          className="flex-1 btn-outline text-sm py-2 flex items-center justify-center space-x-1"
-                        >
-                          <Eye size={16} />
-                          <span>View</span>
-                        </button>
-                        <button
-                          onClick={() => navigate(`/ads/${ad.id}/edit`)}
-                          className="flex-1 btn-secondary text-sm py-2 flex items-center justify-center space-x-1"
-                        >
-                          <Edit size={16} />
-                          <span>Edit</span>
-                        </button>
-                        <button
-                          onClick={() => handleDelete(ad.id)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+  {/* Statistics Button - Show for live ads */}
+  {ad.status === 'live' && (
+    <button
+      onClick={() => navigate(`/ads/${ad.id}/statistics`)}
+      className="w-full bg-green-600 text-white text-sm py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-1"
+    >
+      <BarChart3 size={16} />
+      <span>View Statistics</span>
+    </button>
+  )}
+
+  <div className="flex items-center space-x-2">
+    <button
+      onClick={() => navigate(`/ads/${ad.id}`)}
+      className="flex-1 btn-outline text-sm py-2 flex items-center justify-center space-x-1"
+    >
+      <Eye size={16} />
+      <span>View</span>
+    </button>
+    <button
+      onClick={() => navigate(`/ads/${ad.id}/edit`)}
+      className="flex-1 btn-secondary text-sm py-2 flex items-center justify-center space-x-1"
+    >
+      <Edit size={16} />
+      <span>Edit</span>
+    </button>
+    <button
+      onClick={() => handleDelete(ad.id)}
+      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+    >
+      <Trash2 size={18} />
+    </button>
+  </div>
+</div>
 
                   {/* Date Info */}
                   {(ad.start_date || ad.end_date) && (
