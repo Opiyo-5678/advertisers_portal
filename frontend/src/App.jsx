@@ -61,8 +61,8 @@ function App() {
             <Route path="ads/create" element={<CreateAd />} />
             <Route path="bookings" element={<MyBookings />} />
             <Route path="calendar" element={<Calendar />} />
-            <Route path="/my-ads" element={<MyAdsWithStats />} />
-  <Route path="/ads/:adId/statistics" element={<AdStatistics />} />
+           <Route path="my-ads" element={<MyAdsWithStats />} />
+  <Route path="ads/:adId/statistics" element={<AdStatistics />} />
           </Route>
 
           {/* Redirect any unknown routes to home */}
