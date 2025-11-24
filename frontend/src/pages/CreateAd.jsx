@@ -55,7 +55,7 @@ const CreateAd = () => {
           >
             <div className="flex items-center space-x-3 mb-4">
               <ImageIcon className="text-cyan-600" size={32} />
-              <h2 className="text-2xl font-bold text-navy-800">Category 1</h2>
+              <h2 className="text-2xl font-bold text-navy-800">Type 1</h2>
             </div>
             <p className="text-lg font-semibold text-cyan-600 mb-3">Webflyer Style (Recommended)</p>
             <p className="text-dark-grey-600 mb-4">Simple format focused on visuals and links</p>
@@ -90,7 +90,7 @@ const CreateAd = () => {
           >
             <div className="flex items-center space-x-3 mb-4">
               <FileText className="text-purple-600" size={32} />
-              <h2 className="text-2xl font-bold text-navy-800">Category 2</h2>
+              <h2 className="text-2xl font-bold text-navy-800">Type 2</h2>
             </div>
             <p className="text-lg font-semibold text-purple-600 mb-3">Irregular Format</p>
             <p className="text-dark-grey-600 mb-4">Full details with descriptions and CTAs</p>
