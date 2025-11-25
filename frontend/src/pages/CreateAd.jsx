@@ -202,6 +202,12 @@ const CreateAd = () => {
         status: status === 'submit' ? 'pending_review' : 'draft'
       };
 
+      // Auto-generate title for Type 1 ads if empty
+      if (adCategory === 1 && !adData.title.trim()) {
+        const categoryName = adData.category || 'Product';
+        adData.title = `${categoryName.charAt(0).toUpperCase() + categoryName.slice(1)} Ad`;
+      }
+
       const response = await adsAPI.create(adData);
       const adId = response.data.id;
 
