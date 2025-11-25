@@ -39,7 +39,7 @@ class UploadedFileSerializer(serializers.ModelSerializer):
         model = UploadedFile
         fields = '__all__'
         read_only_fields = [
-            'id', 'user', 'stored_filename', 'file_path',
+            'id', 'user', 'stored_filename', 'file_path', 'file_type',  # ← ADD file_type HERE
             'file_size_kb', 'width', 'height', 'thumbnail_path',
             'virus_scan_status', 'virus_scan_date', 'created_at'
         ]
