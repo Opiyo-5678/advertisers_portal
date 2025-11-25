@@ -50,6 +50,8 @@ class AdSerializer(serializers.ModelSerializer):
     files = UploadedFileSerializer(many=True, read_only=True)
     click_through_rate = serializers.ReadOnlyField()
     
+    ad_category = serializers.IntegerField(write_only=True, required=False, source='ad_type')
+    
     class Meta:
         model = Ad
         fields = '__all__'
