@@ -33,6 +33,7 @@ class AdPlacementSerializer(serializers.ModelSerializer):
 class UploadedFileSerializer(serializers.ModelSerializer):
     """Serializer for uploaded files"""
     user = UserSerializer(read_only=True)
+    ad = serializers.PrimaryKeyRelatedField(required=False, allow_null=True, queryset=Ad.objects.all())
     
     class Meta:
         model = UploadedFile
