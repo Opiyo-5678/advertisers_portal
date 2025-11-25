@@ -125,8 +125,8 @@ const FileUpload = ({ onFilesUploaded }) => {
             </p>
           </div>
           <div className="text-sm text-dark-grey-600">
-            <p>Supported formats: PNG, JPG, SVG, PDF</p>
-            <p>Maximum size: 10MB per file</p>
+            <p>Supported formats: PNG, JPG, SVG, PDF, JPEG</p>
+            <p>Maximum size: 3MB per file</p>
             <p className="text-cyan-600 font-medium mt-1">✓ Files are scanned for malware</p>
           </div>
         </div>
