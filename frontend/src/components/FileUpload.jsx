@@ -174,18 +174,21 @@ const FileUpload = ({ onFilesUploaded }) => {
                       {(fileObj.size / 1024).toFixed(1)} KB
                     </p>
                     {fileObj.backendData?.virus_scan_status && (
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        fileObj.backendData.virus_scan_status === 'clean' 
-                          ? 'bg-green-100 text-green-800'
-                          : fileObj.backendData.virus_scan_status === 'pending'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {fileObj.backendData.virus_scan_status === 'clean' ? '✓ Clean' : 
-                         fileObj.backendData.virus_scan_status === 'pending' ? 'Scanning...' : 
-                         '⚠ Infected'}
-                      </span>
-                    )}
+  <span className={`text-xs px-2 py-0.5 rounded-full ${
+    fileObj.backendData.virus_scan_status === 'clean' 
+      ? 'bg-green-100 text-green-800'
+      : fileObj.backendData.virus_scan_status === 'failed'
+      ? 'bg-yellow-100 text-yellow-800'
+      : fileObj.backendData.virus_scan_status === 'pending'
+      ? 'bg-yellow-100 text-yellow-800'
+      : 'bg-red-100 text-red-800'
+  }`}>
+    {fileObj.backendData.virus_scan_status === 'clean' ? '✓ Clean' : 
+    fileObj.backendData.virus_scan_status === 'failed' ? '⚠ Not Scanned' :
+    fileObj.backendData.virus_scan_status === 'pending' ? 'Scanning...' : 
+    '⚠ Infected'}
+  </span>
+)}
                   </div>
                   {fileObj.status === 'error' && (
                     <p className="text-xs text-red-600 mt-1">{fileObj.error}</p>
