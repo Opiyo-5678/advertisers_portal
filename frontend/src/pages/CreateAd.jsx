@@ -5,7 +5,7 @@ import Toast from '../components/Toast';
 import FileUpload from '../components/FileUpload';
 import { 
   Save, Send, AlertCircle, FileText, Image as ImageIcon,
-  Link as LinkIcon, Scale, MapPin
+  Link as LinkIcon, Scale, MapPin, Tag
 } from 'lucide-react';
 
 const CreateAd = () => {
@@ -21,15 +21,15 @@ const CreateAd = () => {
   
   const [formData, setFormData] = useState({
     ad_category: 1,
+    category: '',  // Merchandise category
     title: '',
     short_description: '',
     full_description: '',
     call_to_action: '',
     website_url: '',
     catalog_url: '',
-    // REMOVED: whatsapp_link
     terms_conditions: '',
-    placement_type: '', // 'main' or 'regional'
+    placement_type: '',
     region_city: '',
   });
 
@@ -129,6 +129,11 @@ const CreateAd = () => {
 
   const validateForm = (isSubmitting = false) => {
     const newErrors = {};
+    
+    // Category validation (required for both types)
+    if (!formData.category) {
+      newErrors.category = 'Please select a product category';
+    }
     
     if (adCategory === 1) {
       // Category 1 validation: Images + Link MANDATORY
@@ -262,6 +267,51 @@ const CreateAd = () => {
           </button>
         </div>
 
+        {/* MERCHANDISE CATEGORY SECTION */}
+        <div className="bg-white rounded-lg shadow-md mb-6">
+          <div className="p-8">
+            <div className="flex items-center space-x-3 mb-6 pb-3 border-b-2 border-orange-500">
+              <Tag className="text-orange-600" size={28} />
+              <h2 className="text-2xl font-bold text-navy-800">Product Category</h2>
+            </div>
+
+            <div className="space-y-4">
+              <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                <p className="text-sm text-dark-grey-600">
+                  Select the category that best describes your product or service
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-navy-800 mb-2">
+                  Category <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className={`input-field ${errors.category ? 'border-red-500' : ''}`}
+                  required
+                >
+                  <option value="">Select a category...</option>
+                  <option value="sports">Sports & Fitness</option>
+                  <option value="furniture">Home & Furniture</option>
+                  <option value="clothing">Clothing & Fashion</option>
+                  <option value="electronics">Electronics</option>
+                  <option value="food">Food & Beverages</option>
+                  <option value="beauty">Beauty & Health</option>
+                  <option value="automotive">Automotive</option>
+                  <option value="other">Other</option>
+                </select>
+                {errors.category && (
+                  <p className="text-sm text-red-500 mt-1">{errors.category}</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* MAIN FORM */}
         <div className="bg-white rounded-lg shadow-md">
           <div className="p-8 space-y-10">
             
@@ -386,7 +436,6 @@ const CreateAd = () => {
             {/* CATEGORY 2: Full Format */}
             {adCategory === 2 && (
               <>
-                {/* Keep existing CreateAd sections for Category 2 */}
                 {/* Ad Content section */}
                 <div>
                   <div className="flex items-center space-x-3 mb-6 pb-3 border-b-2 border-cyan-500">
