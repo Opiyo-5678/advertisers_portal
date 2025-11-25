@@ -403,33 +403,56 @@ class UploadedFileViewSet(viewsets.ModelViewSet):
             return ('failed', str(e))
     
     def perform_create(self, serializer):
+        import traceback
+    
+    try:
+        # Log what we received
+        print("=" * 50)
+        print("📤 FILE UPLOAD ATTEMPT")
+        print(f"User: {self.request.user.username}")
+        print(f"FILES keys: {list(self.request.FILES.keys())}")
+        print(f"POST keys: {list(self.request.POST.keys())}")
+        
         file = self.request.FILES.get('file')
         
         if not file:
+            print("❌ ERROR: No file in request")
             raise serializers.ValidationError({'file': 'No file provided'})
+        
+        print(f"✓ File received: {file.name}")
+        print(f"  Size: {file.size} bytes")
+        print(f"  Type: {file.content_type}")
         
         # Generate unique filename
         ext = os.path.splitext(file.name)[1]
         stored_filename = f"{uuid.uuid4()}{ext}"
+        print(f"  Generated filename: {stored_filename}")
         
         # Save file
         upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
         os.makedirs(upload_dir, exist_ok=True)
         file_path = os.path.join(upload_dir, stored_filename)
+        print(f"  Saving to: {file_path}")
         
         with open(file_path, 'wb+') as destination:
             for chunk in file.chunks():
                 destination.write(chunk)
         
+        print(f"✓ File saved successfully")
+        
         # Get file size
         file_size_kb = file.size // 1024
+        print(f"  File size: {file_size_kb} KB")
         
         # Scan for viruses
+        print(f"  Scanning for viruses...")
         scan_status, threat_info = self.scan_file_for_virus(file_path)
+        print(f"  Scan result: {scan_status}")
         
         # If infected, delete the file immediately
         if scan_status == 'infected':
             os.remove(file_path)
+            print(f"❌ File infected: {threat_info}")
             raise serializers.ValidationError({
                 'file': f'File is infected with malware: {threat_info}. Upload rejected.'
             })
@@ -442,12 +465,14 @@ class UploadedFileViewSet(viewsets.ModelViewSet):
                 from PIL import Image
                 with Image.open(file_path) as img:
                     width, height = img.size
+                print(f"  Image dimensions: {width}x{height}")
             except Exception as e:
-                print(f"Could not get image dimensions: {e}")
+                print(f"⚠️ Could not get image dimensions: {e}")
         
         # Calculate relative file path for URL
         relative_path = f'/media/uploads/{stored_filename}'
         
+        print(f"  Saving to database...")
         # Save to database
         serializer.save(
             user=self.request.user,
@@ -462,7 +487,21 @@ class UploadedFileViewSet(viewsets.ModelViewSet):
             virus_scan_date=timezone.now()
         )
         
-        print(f"✓ File uploaded: {file.name} | Scan: {scan_status}")
+        print(f"✅ FILE UPLOAD SUCCESS")
+        print("=" * 50)
+    
+    except serializers.ValidationError as e:
+        print(f"❌ VALIDATION ERROR: {e.detail}")
+        print("=" * 50)
+        raise
+    
+    except Exception as e:
+        print(f"❌ UNEXPECTED ERROR: {str(e)}")
+        print(f"❌ Error type: {type(e).__name__}")
+        print("❌ Full traceback:")
+        traceback.print_exc()
+        print("=" * 50)
+        raise
 
 
 class BookingViewSet(viewsets.ModelViewSet):
