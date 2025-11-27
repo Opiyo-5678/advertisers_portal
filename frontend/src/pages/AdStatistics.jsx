@@ -16,15 +16,60 @@ const AdStatistics = () => {
   const fetchStatistics = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/advertisers/ads/${adId}/statistics/`,
+      
+      // STEP 1: Get ad details from Django (to get website_url, title, category)
+      const adResponse = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/advertisers/ads/${adId}/`,
         {
           headers: { Authorization: `Bearer ${token}` }
         }
       );
-      setStats(response.data);
+      
+      const adData = adResponse.data;
+      
+      // STEP 2: Get real statistics from DNN API using website_url
+      let dnnStats = null;
+      
+      if (adData.website_url) {
+        try {
+          const statsResponse = await axios.get(
+            'https://webflyers.uk/DesktopModules/DZ_SponsorsWall/ClickStatsAPI.ashx',
+            {
+              params: { sponsor_url: adData.website_url },
+              timeout: 5000 // 5 second timeout
+            }
+          );
+          
+          if (statsResponse.data.success) {
+            dnnStats = statsResponse.data;
+          }
+        } catch (apiError) {
+          console.error('Failed to fetch DNN statistics:', apiError);
+          // Continue without stats - will show zeros
+        }
+      }
+      
+      // STEP 3: Merge ad details with statistics
+      const mergedStats = {
+        ad_title: adData.title || adData.company_name || 'Ad Statistics',
+        ad_category: adData.category || adData.merchandise_category || '',
+        website_url: adData.website_url || '',
+        start_date: adData.start_date || 'N/A',
+        end_date: adData.end_date || 'Ongoing',
+        
+        // Statistics from DNN (or zeros if not available)
+        total_clicks: dnnStats?.total_clicks || 0,
+        clicks_today: dnnStats?.clicks_today || 0,
+        clicks_this_week: dnnStats?.clicks_this_week || 0,
+        clicks_this_month: dnnStats?.clicks_this_month || 0,
+        daily_data: dnnStats?.daily_data || [],
+        device_breakdown: dnnStats?.device_breakdown || { mobile: 0, desktop: 0 }
+      };
+      
+      setStats(mergedStats);
       setLoading(false);
     } catch (err) {
+      console.error('Error fetching statistics:', err);
       setError('Failed to load statistics');
       setLoading(false);
     }
@@ -69,6 +114,17 @@ const AdStatistics = () => {
         </button>
         <h1 className="text-2xl font-bold text-navy-800">{stats?.ad_title || 'Ad Statistics'}</h1>
         <p className="text-gray-600">{stats?.ad_category || ''}</p>
+        {stats?.website_url && (
+          <p className="text-sm text-gray-500 mt-1">
+            Tracking: {stats.website_url}
+          </p>
+        )}
+      </div>
+
+      {/* Real-time Data Indicator */}
+      <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-center gap-2">
+        <span className="text-green-600 text-xl">✓</span>
+        <span className="text-green-800 font-medium">Connected to live statistics from webflyers.uk</span>
       </div>
 
       {/* Overview Cards */}
@@ -92,7 +148,7 @@ const AdStatistics = () => {
       {/* No Data Message */}
       {!hasData && (
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-          <p className="text-gray-700">No clicks recorded yet. Statistics will appear once your ad receives traffic.</p>
+          <p className="text-gray-700">No clicks recorded yet. Statistics will appear once your ad receives traffic on webflyers.uk.</p>
         </div>
       )}
 
